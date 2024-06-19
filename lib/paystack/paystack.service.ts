@@ -6,8 +6,13 @@ import {
     ChargeAuthorizationRequest,
     CreateChargeRequest,
     CreateChargeResponse,
+    CreateCustomerRequest,
+    CreateCustomerResponse,
     CreatePlanRequest,
     CreatePlanResponse,
+    CreateDedicatedVirtualAccountRequest,
+    CreateDedicatedVirtualAccountResponse,
+    FetchCustomerResponse,
     GetBanksResponse,
     InitializeTransactionRequest,
     InitializeTransactionResponse,
@@ -23,8 +28,13 @@ import {
     PayWithTransferResponse,
     PayWithUSSDRequest,
     PayWithUSSDResponse,
+    PaystackResponse,
+    UpdateCustomerRequest,
+    UpdateCustomerResponse,
+    ValidateCustomerRequest,
     VerifyAccountNumberResponse,
-    VerifyTransactionResponse
+    VerifyTransactionResponse,
+    DVAEvents
 } from './types'
 import http from '../http'
 
@@ -63,6 +73,7 @@ class PaystackInputValidator {
 class BankService extends BaseService {
     public baseUrl: string
     private headers: { [key: string]: string }
+    dvaEvents = DVAEvents
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/bank')
@@ -87,6 +98,15 @@ class BankService extends BaseService {
 
         const url = `${this.baseUrl}/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
         const response = await http.get<VerifyAccountNumberResponse>(url, this.headers)
+        return response
+    }
+
+    public async createDedicatedVirtualAccount(input: CreateDedicatedVirtualAccountRequest): BaseResponse<CreateDedicatedVirtualAccountResponse> {
+        const url = `${this.baseUrl}/dedicated_account`
+        const response = await http.post<CreateDedicatedVirtualAccountRequest, CreateDedicatedVirtualAccountResponse>(
+            url, input, this.headers
+        )
+
         return response
     }
 }
@@ -274,16 +294,128 @@ class SubscriptionService extends BaseService {
     }
 }
 
+class CustomerService extends BaseService {
+    public baseUrl: string
+    private headers: { [key: string]: string }
+
+    constructor(secretKey: string) {
+        super(secretKey, 'https://api.paystack.co/customer')
+        this.headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${secretKey}`
+        }
+    }
+
+    public async createCustomer(input: CreateCustomerRequest): BaseResponse<CreateCustomerResponse> {
+        const response = await http.post<CreateCustomerRequest, CreateCustomerResponse>(
+            this.baseUrl, input, this.headers
+        )
+
+        return response
+    }
+
+    public async getCustomer(customerId: string): BaseResponse<CreateCustomerResponse> {
+        const url = `${this.baseUrl}/${customerId}`
+        const response = await http.get<CreateCustomerResponse>(url, this.headers)
+
+        return response
+    }
+
+    public async listCustomers(): BaseResponse<CreateCustomerResponse[]> {
+        const response = await http.get<CreateCustomerResponse[]>(this.baseUrl, this.headers)
+
+        return response
+    }
+
+    public async fetchCustomer(email_or_code: string): BaseResponse<FetchCustomerResponse> {
+        const url = `${this.baseUrl}/${email_or_code}`
+        const response = await http.get<FetchCustomerResponse>(url, this.headers)
+
+        return response
+    }
+
+    public async updateCustomer(input: UpdateCustomerRequest, code: string): BaseResponse<UpdateCustomerResponse> {
+        const url = `${this.baseUrl}/${code}`
+        const response = await http.put<UpdateCustomerRequest, UpdateCustomerResponse>(
+            url, input, this.headers
+        )
+
+        return response
+    }
+
+    /**
+     * 
+     *When this API is called a webhook is sent to the webhook URL. It can either be a
+     customeridentification.failed or customeridentification.success event.
+     If failed there's a reason field in the data object that explains why the identification failed.
+     There's a customer id and customer code in the data object that can be used to identify the customer.
+     sample response 
+     ```json
+     {
+        "event": "customeridentification.failed",
+        "data": {
+            "customer_id": 82796315,
+            "customer_code": "CUS_XXXXXXXXXXXXXXX",
+            "email": "email@email.com",
+            "identification": {
+                "country": "NG",
+                "type": "bank_account",
+                "bvn": "123*****456",
+                "account_number": "012****345",
+                "bank_code": "999991"
+            },
+            "reason": "Account number or BVN is incorrect"
+        }
+    }
+     ```
+     */
+    public async validateCustomer(code: string, input: ValidateCustomerRequest): BaseResponse<PaystackResponse<unknown>> {
+        const url = `${this.baseUrl}/${code}/identification`
+        const response = await http.post<ValidateCustomerRequest, PaystackResponse<unknown>>(url, input, this.headers)
+
+        return response
+    }
+
+    public async whitelistCustomer(code: string): BaseResponse<UpdateCustomerResponse> {
+        const url = `${this.baseUrl}/set_risk_action`
+        const response = await http.post<{ customer: string, risk_action: 'allow' }, UpdateCustomerResponse>(
+            url, { customer: code, risk_action: 'allow' }, this.headers
+        )
+
+        return response
+    }
+
+    public async blacklistCustomer(code: string): BaseResponse<UpdateCustomerResponse> {
+        const url = `${this.baseUrl}/set_risk_action`
+        const response = await http.post<{ customer: string, risk_action: 'deny' }, UpdateCustomerResponse>(
+            url, { customer: code, risk_action: 'deny' }, this.headers
+        )
+
+        return response
+    }
+
+    public async deactivateAuthorization(authorization_code: string): BaseResponse<PaystackResponse<unknown>> {
+        const url = `${this.baseUrl}/deactivate_authorization`
+        const response = await http.post<{ authorization_code: string }, PaystackResponse<unknown>>(
+            url, { authorization_code }, this.headers
+        )
+
+        return response
+    }
+}
+
 export class PastackService {
     public bankService: BankService
     public transactionService: TransactionService
     public chargeService: ChargeService
     public subscriptionService: SubscriptionService
+    public customerService: CustomerService
 
     constructor(secretKey: string) {
         this.bankService = new BankService(secretKey)
         this.transactionService = new TransactionService(secretKey)
         this.chargeService = new ChargeService(secretKey)
         this.subscriptionService = new SubscriptionService(secretKey)
+        this.customerService = new CustomerService(secretKey)
     }
 }

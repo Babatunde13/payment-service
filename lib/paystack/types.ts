@@ -1,6 +1,6 @@
 import { Any } from '../base.service'
 
-interface PaystackResponse<T> {
+export interface PaystackResponse<T> {
     status: boolean;
     message: string;
     data: T;
@@ -30,6 +30,13 @@ enum Currency {
 
 enum BankType {
     NUBAN = 'nuban',
+}
+
+export enum DVAEvents {
+    SUCCESSFUL_CUSTOMER_IDENTIFICATION = 'customeridentification.success',
+    FAILED_CUSTOMER_IDENTIFICATION = 'customeridentification.failed',
+    SUCCESSFUL_DVA_ASSIGNMENT = 'dedicatedaccount.assign.success',
+    FAILED_DVA_ASSIGNMENT = 'dedicatedaccount.assign.failed',
 }
 
 export enum TransactionStatus {
@@ -75,6 +82,35 @@ export enum USSD {
     UBA = '919',
     Sterling = '822',
     Zenith = '966',
+}
+
+export type CreateCustomerRequest = {
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+}
+
+export type UpdateCustomerRequest = {
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    metadata?: Any;
+}
+
+export type ValidateCustomerRequest = {
+    country: 'NG' | 'GH' | 'KE' | 'ZA';
+    type: 'bank_account'
+    account_number: string;
+    bank_code: string;
+    bvn: string;
+    first_name: string;
+    last_name: string;
+}
+
+export type CreateDedicatedVirtualAccountRequest = {
+    customer: string;
+    preferred_bank: 'titan-paystack' | 'wema' | 'test-bank';
 }
 
 export type InitializeTransactionRequest = Pay & {
@@ -158,6 +194,17 @@ interface Bank {
     updatedAt: string;
 }
 
+interface Subscription {
+    id: number;
+    domain: string;
+    status: string;
+    customer: Customer;
+    plan: Plan;
+    authorization: Authorization;
+    createdAt: string;
+    updatedAt: string;
+}
+
 interface ResolveAccount {
     account_number: string;
     account_name: string;
@@ -199,9 +246,58 @@ interface Customer {
     last_name: string;
     email: string;
     phone: string;
+    integration: number;
+    domain: string;
+    identifications?: string;
+    identified: boolean;
     metadata: Any;
     risk_action: string;
+    createdAt: string;
+    updatedAt: string;
 }
+
+interface FullCustomer extends Customer {
+    transactions: VerifyTransaction[]
+    subscriptions: Subscription[]
+    authorizations: Authorization[]
+    total_transactions: number
+    total_transaction_value: Any[]
+    dedicaated_account: Any
+}
+
+interface DedicatedVirtualAccount {
+    bank: {
+      name: string
+      id: number
+      slug: 'titan-paystack' | 'wema'
+    },
+    account_name: string
+    account_number: string
+    assigned: boolean
+    currency: Currency
+    metadata: Any
+    active: boolean
+    id: number
+    created_at: string
+    updated_at: string
+    assignment: {
+      integration: number
+      assignee_id: number
+      assignee_type: string
+      expired: boolean
+      account_type: string
+      assigned_at: string
+    },
+    customer: {
+      id: number
+      first_name: string
+      last_name: string
+      email: string
+      customer_code: string
+      phone: string
+      risk_action: string
+    }
+  }
 
 interface Plan {
     id: number;
@@ -324,3 +420,8 @@ export type PayWithEftResponse = PaystackResponse<PayWithEft>
 export type PayWithQRCodeResponse = PaystackResponse<PayWithQRCode>
 export type BulkChargeResponse = PaystackResponse<BulkCharge>
 export type CreatePlanResponse = PaystackResponse<Plan>
+export type CreateCustomerResponse = PaystackResponse<Customer>
+export type ListCustomersResponse = PaystackResponse<Customer[]>
+export type FetchCustomerResponse = PaystackResponse<FullCustomer>
+export type UpdateCustomerResponse = PaystackResponse<Customer>
+export type CreateDedicatedVirtualAccountResponse = PaystackResponse<DedicatedVirtualAccount>
