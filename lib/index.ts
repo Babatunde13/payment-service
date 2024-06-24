@@ -1,1 +1,1 @@
-export { PastackService } from './paystack/paystack.service'
+export * from './paystack'

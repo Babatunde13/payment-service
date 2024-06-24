@@ -71,8 +71,8 @@ class PaystackInputValidator {
 }
 
 class BankService extends BaseService {
-    public baseUrl: string
-    private headers: { [key: string]: string }
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
     dvaEvents = DVAEvents
 
     constructor(secretKey: string) {
@@ -112,8 +112,8 @@ class BankService extends BaseService {
 }
 
 class ChargeService extends BaseService {
-    public baseUrl: string
-    private headers: { [key: string]: string }
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/charge')
@@ -218,8 +218,8 @@ class ChargeService extends BaseService {
 }
 
 class TransactionService extends BaseService {
-    public baseUrl: string
-    private headers: { [key: string]: string }
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/transaction')
@@ -273,8 +273,8 @@ class TransactionService extends BaseService {
 }
 
 class SubscriptionService extends BaseService {
-    public baseUrl: string
-    private headers: { [key: string]: string }
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/subscription')
@@ -295,8 +295,8 @@ class SubscriptionService extends BaseService {
 }
 
 class CustomerService extends BaseService {
-    public baseUrl: string
-    private headers: { [key: string]: string }
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/customer')

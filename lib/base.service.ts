@@ -1,6 +1,6 @@
 export class BaseService {
-    public secretKey: string
-    public baseUrl: string
+    protected secretKey: string
+    protected baseUrl: string
 
     constructor(secretKey: string, baseUrl: string) {
         if (!secretKey) {
