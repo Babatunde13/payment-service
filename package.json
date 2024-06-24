@@ -1,15 +1,16 @@
 {
-  "name": "payment-service.nosync",
+  "name": "payment-gateway-integrations",
   "version": "1.0.0",
   "description": "This repository contains code different services that helps in integrating payment gateways with your application.",
   "main": ".eslintrc.js",
+  "maintainers": ["Babatunde Koiki"],
   "keywords": [
     "payment",
     "paystack",
     "flutterwave",
     "stripe"
   ],
-  "author": "Babatunde Koiki <koikibabatunde14@gmail.com>",
+  "author": "Babatunde .M. Koiki <koikibabatunde14@gmail.com>",
   "license": "MIT",
   "directories": {
     "lib": "lib"
