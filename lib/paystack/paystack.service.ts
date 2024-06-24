@@ -404,12 +404,31 @@ class CustomerService extends BaseService {
     }
 }
 
-export class PastackService {
+class MiscService extends BaseService {
+    protected baseUrl: string
+    protected headers: { [key: string]: string }
+
+    constructor(secretKey: string) {
+        super(secretKey, 'https://api.paystack.co')
+        this.headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${secretKey}`
+        }
+    }
+
+    public async resolveBVN(bvn: string) {}
+    public async resolveCardBin(bin: string) {}
+    public async resolvePhone(phone: string) {}
+    public async resolveTransferRecipient(recipientCode: string) {}
+}
+
+export class PaystackService {
     public bankService: BankService
     public transactionService: TransactionService
     public chargeService: ChargeService
     public subscriptionService: SubscriptionService
     public customerService: CustomerService
+    public miscService: MiscService
 
     constructor(secretKey: string) {
         this.bankService = new BankService(secretKey)
@@ -417,5 +436,6 @@ export class PastackService {
         this.chargeService = new ChargeService(secretKey)
         this.subscriptionService = new SubscriptionService(secretKey)
         this.customerService = new CustomerService(secretKey)
+        this.miscService = new MiscService(secretKey)
     }
 }
