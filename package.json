@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway-integrations",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "This repository contains code different services that helps in integrating payment gateways with your application.",
   "main": ".eslintrc.js",
   "maintainers": ["Babatunde Koiki"],
@@ -12,9 +12,6 @@
   ],
   "author": "Babatunde .M. Koiki <koikibabatunde14@gmail.com>",
   "license": "MIT",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .ts",
     "lint:fix": "./node_modules/.bin/eslint . --ext .ts --fix",
