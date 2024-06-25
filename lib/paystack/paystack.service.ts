@@ -1,4 +1,3 @@
-import validator from 'validator'
 import { BaseResponse, BaseService } from '../base.service'
 import {
     BulkChargeRequest,
@@ -40,19 +39,24 @@ import http from '../http'
 
 class PaystackInputValidator {
     private static validateAccountNumber(accountNumber: string): boolean {
-        return accountNumber.length === 10
+        const accountNumberRegex = /^\d{10}$/
+        return accountNumberRegex.test(accountNumber)
     }
 
     private static validateBankCode(bankCode: string): boolean {
+        const bankCodeRegex = /^\d{2,}$/
+        return bankCodeRegex.test(bankCode)
         return bankCode.length > 2
     }
 
     private static isEmail(email: string) {
-        return validator.isEmail(email)
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        return emailRegex.test(email)
     }
 
     private static isUrl(url: string) {
-        return validator.isURL(url)
+        const urRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/
+        return urRegex.test(url)
     }
 
     public static validateResolveAccountInput(accountNumber: string, bankCode: string) {

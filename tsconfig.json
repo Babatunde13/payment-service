@@ -6,8 +6,8 @@
       "strict": true,
       // generate .d.ts files
       "declaration": true,
-      "declarationMap": true,
-      "declarationDir": "dist",
+      "declarationMap": false,
+      "declarationDir": ".",
       "esModuleInterop": true,
       "strictNullChecks": true,
       "module": "commonjs",
