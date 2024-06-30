@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway-integrations",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "This repository contains code different services that helps in integrating payment gateways with your application.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
