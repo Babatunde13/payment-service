@@ -1,24 +1,37 @@
 # Paystack Service
 
-
 ### [Paystack](https://paystack.com/)
 Paystack is a payments platform that makes the online payments process seamless for both the consumers and the businesses they are trying to pay. It is a secure, modern, easy-to-use platform that allows merchants to accept online payments from customers around the world.
 
 **Usage**:
 ```typescript
-import { PaystackService } from 'payment-gateway-integrations';
+import { PaystackService } from 'payment-gateway-integrations'
 
-const paystack = new PaystackService('secret key');
-paystack.bankService.listBanks().then((response) => {
-    console.log(response);
-}).catch((error) => {
-    console.log(error);
-});
+const paystack = new PaystackService('secret key')
+paystack.bankService.getBanks().then((response) => {
+    console.log(response)
+})
+```
+
+### Accessing Type Definitions
+```typescript
+import { PaystackService, CreateChargeRequest } from 'payment-gateway-integrations'
+
+const paystack = new PaystackService('secret key')
+
+const chargeRequest: CreateChargeRequest = {
+    amount: 10000,
+    email: 'user@gmail.com'
+} // wrong type will be caught by the typescript compiler and editor intelligence
+
+paystack.chargeService.createCharge(chargeRequest).then((response) => {
+    console.log(response)
+})
 ```
 
 #### Supported Methods:
 1. `bankService`:
-    - `listBanks()`
+    - `getBanks()`
     - `resolveAccountNumber(accountNumber: string, bankCode: string)`
     - `verifyAccountNumber(accountNumber: string, bankCode: string)`
     - `createDedicatedVirtualAccount(input: CreateDedicatedVirtualAccountRequest)`
@@ -51,10 +64,7 @@ paystack.bankService.listBanks().then((response) => {
     - `resolvePhone(phone: string)`
     - `resolveTransferRecipient(recipientCode: string)`
 6. `subscriptionService`:
-    - `createPlan(data: CreatePlanData)`
-    - `createSubscription(data: CreateSubscriptionData)`
-    - `disableSubscription(subscriptionCode: string)`
-    - `enableSubscription(subscriptionCode: string)`
-    - `getSubscription(subscriptionCode: string)`
     - `listSubscriptions()`
-    - `updateSubscription(data: UpdateSubscriptionData)`
+7. `PlanService`:
+    - `listPlans()`
+    - `createPlan(input: CreatePlanRequest)`
