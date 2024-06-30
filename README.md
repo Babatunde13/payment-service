@@ -27,3 +27,16 @@ paystack.bankService.getBanks().then((response) => {
     console.log(response)
 })
 ```
+
+### 2. [Budpay](./src/budpay/README.md)
+With [Budpay](https://budpay.com/), you have everything your business needs to accept local and global payments. Whether you’re a small business, startup, or a large enterprise, our payment solutions are designed to empower your business.
+
+**Usage**:
+```typescript
+import { BudpayService } from 'payment-gateway-integrations'
+
+const budpay = new BudpayService('secret key')
+budpay.billPaymentService.tvService.getTVProviders().then((response) => {
+    console.log(response)
+})
+```
