@@ -1,13 +1,9 @@
 export class BaseService {
     protected secretKey: string
 
-    constructor(secretKey: string, baseUrl: string) {
+    constructor(secretKey: string) {
         if (!secretKey) {
             throw new Error('Secret key is required')
-        }
-
-        if (!baseUrl) {
-            throw new Error('Base URL is required')
         }
 
         this.secretKey = secretKey
@@ -27,6 +23,7 @@ export class BaseService {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any
 
 type Response<T> =

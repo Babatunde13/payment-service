@@ -33,7 +33,9 @@ import {
     ValidateCustomerRequest,
     VerifyAccountNumberResponse,
     VerifyTransactionResponse,
-    DVAEvents
+    DVAEvents,
+    ListPlansResponse,
+    listSubscriptionsResponse
 } from './types'
 import http from '../http'
 
@@ -75,12 +77,13 @@ class PaystackInputValidator {
 }
 
 class BankService extends BaseService {
-    private baseUrl: string
+    private baseUrl = 'https://api.paystack.co/bank'
     private headers: { [key: string]: string }
     dvaEvents = DVAEvents
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co/bank')
+        super(secretKey)
+        this.baseUrl = 'https://api.paystack.co/bank'
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -88,7 +91,7 @@ class BankService extends BaseService {
     }
 
     public async getBanks(payWithBank = false): BaseResponse<GetBanksResponse> {
-        const url = this.buildUrlWithQueryParam(`${this.baseUrl}`, { pay_with_bank: payWithBank })
+        const url = this.buildUrlWithQueryParam(this.baseUrl, { pay_with_bank: payWithBank })
         const response = await http.get<GetBanksResponse>(url, this.headers)
         return response
     }
@@ -116,11 +119,11 @@ class BankService extends BaseService {
 }
 
 class ChargeService extends BaseService {
-    private baseUrl: string
+    private baseUrl = 'https://api.paystack.co/charge'
     private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co/charge')
+        super(secretKey)
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -222,11 +225,11 @@ class ChargeService extends BaseService {
 }
 
 class TransactionService extends BaseService {
-    private baseUrl: string
+    private baseUrl = 'https://api.paystack.co/transaction'
     private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co/transaction')
+        super(secretKey)
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -276,12 +279,12 @@ class TransactionService extends BaseService {
     }
 }
 
-class SubscriptionService extends BaseService {
-    private baseUrl: string
+class PlanService extends BaseService {
+    private baseUrl = 'https://api.paystack.co/plan'
     private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co/subscription')
+        super(secretKey)
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -289,27 +292,45 @@ class SubscriptionService extends BaseService {
     }
 
     public async createPlan(input: CreatePlanRequest): BaseResponse<CreatePlanResponse> {
-        const url = 'https://api.paystack.co/plan'
         const response = await http.post<CreatePlanRequest, CreatePlanResponse>(
-            url, input, this.headers
+            this.baseUrl, input, this.headers
         )
 
         return response
     }
 
-    public async listSubscriptions(): BaseResponse<any> {
-        const response = await http.get(this.baseUrl, this.headers)
+    public async listPlans(): BaseResponse<ListPlansResponse> {
+        const response = await http.get<ListPlansResponse>(this.baseUrl, this.headers)
+
+        return response
+    }
+}
+
+class SubscriptionService extends BaseService {
+    private baseUrl = 'https://api.paystack.co/subscription'
+    private headers: { [key: string]: string }
+
+    constructor(secretKey: string) {
+        super(secretKey)
+        this.headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${secretKey}`
+        }
+    }
+
+    public async listSubscriptions(): BaseResponse<listSubscriptionsResponse> {
+        const response = await http.get<listSubscriptionsResponse>(this.baseUrl, this.headers)
 
         return response
     }
 }
 
 class CustomerService extends BaseService {
-    private baseUrl: string
+    private baseUrl = 'https://api.paystack.co/customer'
     private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co/customer')
+        super(secretKey)
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -415,11 +436,11 @@ class CustomerService extends BaseService {
 }
 
 class MiscService extends BaseService {
-    private baseUrl: string
+    private baseUrl = 'https://api.paystack.co'
     private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
-        super(secretKey, 'https://api.paystack.co')
+        super(secretKey)
         this.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${secretKey}`
@@ -459,6 +480,7 @@ export class PaystackService {
     public subscriptionService: SubscriptionService
     public customerService: CustomerService
     public miscService: MiscService
+    public planService: PlanService
 
     constructor(secretKey: string) {
         this.bankService = new BankService(secretKey)
@@ -467,5 +489,6 @@ export class PaystackService {
         this.subscriptionService = new SubscriptionService(secretKey)
         this.customerService = new CustomerService(secretKey)
         this.miscService = new MiscService(secretKey)
+        this.planService = new PlanService(secretKey)
     }
 }
