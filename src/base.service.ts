@@ -26,13 +26,13 @@ export class BaseService {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any
 
-type Response<T> =
+type Response<SuccessRes, ErrorRes=Any> =
     {
-        data: T
+        data: SuccessRes
         error?: undefined
     } |{
         data?: undefined
-        error: Any
+        error: ErrorRes
     }
 
-export type BaseResponse<T> = Promise<Response<T>>
+export type BaseResponse<SuccessRes, ErrorRes=Any> = Promise<Response<SuccessRes, ErrorRes>>
