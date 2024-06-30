@@ -1,6 +1,5 @@
 export class BaseService {
     protected secretKey: string
-    protected baseUrl: string
 
     constructor(secretKey: string, baseUrl: string) {
         if (!secretKey) {
@@ -12,7 +11,6 @@ export class BaseService {
         }
 
         this.secretKey = secretKey
-        this.baseUrl = baseUrl
     }
 
     buildUrlWithQueryParam = (url: string, query: { [key: string]: Any }) => {

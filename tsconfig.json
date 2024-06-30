@@ -5,9 +5,9 @@
       "allowJs": true,
       "strict": true,
       // generate .d.ts files
-      "declaration": true,
+      "declaration": false,
       "declarationMap": false,
-      "declarationDir": ".",
+      // "declarationDir": ".",
       "esModuleInterop": true,
       "strictNullChecks": true,
       "module": "commonjs",

@@ -75,8 +75,8 @@ class PaystackInputValidator {
 }
 
 class BankService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
     dvaEvents = DVAEvents
 
     constructor(secretKey: string) {
@@ -116,8 +116,8 @@ class BankService extends BaseService {
 }
 
 class ChargeService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/charge')
@@ -222,8 +222,8 @@ class ChargeService extends BaseService {
 }
 
 class TransactionService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/transaction')
@@ -277,8 +277,8 @@ class TransactionService extends BaseService {
 }
 
 class SubscriptionService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/subscription')
@@ -296,11 +296,17 @@ class SubscriptionService extends BaseService {
 
         return response
     }
+
+    public async listSubscriptions(): BaseResponse<any> {
+        const response = await http.get(this.baseUrl, this.headers)
+
+        return response
+    }
 }
 
 class CustomerService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co/customer')
@@ -409,8 +415,8 @@ class CustomerService extends BaseService {
 }
 
 class MiscService extends BaseService {
-    protected baseUrl: string
-    protected headers: { [key: string]: string }
+    private baseUrl: string
+    private headers: { [key: string]: string }
 
     constructor(secretKey: string) {
         super(secretKey, 'https://api.paystack.co')
@@ -420,10 +426,30 @@ class MiscService extends BaseService {
         }
     }
 
-    public async resolveBVN(bvn: string) {}
-    public async resolveCardBin(bin: string) {}
-    public async resolvePhone(phone: string) {}
-    public async resolveTransferRecipient(recipientCode: string) {}
+    public async resolveBVN(bvn: string) {
+        const url = `${this.baseUrl}/bvn/match?bvn=${bvn}`
+        const response = await http.get(url, this.headers)
+
+        return response
+    }
+    public async resolveCardBin(bin: string) {
+        const url = `${this.baseUrl}/decision/bin/${bin}`
+        const response = await http.get(url, this.headers)
+
+        return response
+    }
+    public async resolvePhone(phone: string) {
+        const url = `${this.baseUrl}/phonebook/lookup?phone=${phone}`
+        const response = await http.get(url, this.headers)
+
+        return response
+    }
+    public async resolveTransferRecipient(recipientCode: string) {
+        const url = `${this.baseUrl}/transferrecipient/${recipientCode}`
+        const response = await http.get(url, this.headers)
+
+        return response
+    }
 }
 
 export class PaystackService {
