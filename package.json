@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway-integrations",
-  "version": "1.1.3",
+  "version": "1.1.5",
   "description": "This repository contains code different services that helps in integrating payment gateways with your application.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -23,7 +23,7 @@
     "lint": "./node_modules/.bin/eslint . --ext .ts",
     "lint:fix": "./node_modules/.bin/eslint . --ext .ts --fix",
     "build": "tsup",
-    "build:watch": "./node_modules/.bin/tsc -p tsconfig.json --watch"
+    "build:watch": "tsup --watch"
   },
   "devDependencies": {
     "@types/eslint": "8.56.6",

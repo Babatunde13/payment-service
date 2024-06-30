@@ -21,12 +21,15 @@ class Http {
         } catch (err) {
             const errorResponse = err as AxiosError
             let error: Any
-            if (error.response) {
+            if (errorResponse.response) {
                 error = errorResponse.response?.data
+                error.isResponseError = true
             } else if (errorResponse.request) {
                 error = errorResponse.request
+                error.isRequestError = true
             } else {
                 error = errorResponse
+                error.isUnknwon = true
             }
 
             return { error }
