@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { Any } from './base.service'
+import { AppError } from './error'
 
 class Http {
     private async makeRequest<Req, Res>({
@@ -20,6 +21,8 @@ class Http {
             return { data }
         } catch (err) {
             const errorResponse = err as AxiosError
+            const message = errorResponse.message || 'An error occurred while making request'
+            const statusCode = errorResponse.response?.status || 500
             let error: Any
             if (errorResponse.response) {
                 error = errorResponse.response?.data
@@ -32,7 +35,7 @@ class Http {
                 error.isUnknwon = true
             }
 
-            return { error }
+            return { error: new AppError(message, statusCode, error) }
         }
     }
 

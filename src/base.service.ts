@@ -1,3 +1,5 @@
+import { AppError } from './error'
+
 export class BaseService {
     protected secretKey: string
 
@@ -26,13 +28,13 @@ export class BaseService {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any
 
-type Response<SuccessRes, ErrorRes=Any> =
+type Response<SuccessRes> =
     {
         data: SuccessRes
         error?: undefined
     } |{
         data?: undefined
-        error: ErrorRes
+        error: AppError
     }
 
-export type BaseResponse<SuccessRes, ErrorRes=Any> = Promise<Response<SuccessRes, ErrorRes>>
+export type BaseResponse<SuccessRes> = Promise<Response<SuccessRes>>
