@@ -38,6 +38,7 @@ import {
     listSubscriptionsResponse
 } from './types'
 import http from '../http'
+import { AppError } from '../error'
 
 class PaystackInputValidator {
     private static validateAccountNumber(accountNumber: string): boolean {
@@ -100,7 +101,7 @@ class BankService extends BaseService {
         accountNumber: string, bankCode: string
     ): BaseResponse<VerifyAccountNumberResponse> {
         if (!PaystackInputValidator.validateResolveAccountInput(accountNumber, bankCode)) {
-            return { error: 'Invalid input, acc' }
+            return { error: new AppError('Invalid input', 400) }
         }
 
         const url = `${this.baseUrl}/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
@@ -148,7 +149,7 @@ class ChargeService extends BaseService {
         input: CreateChargeRequest
     ): BaseResponse<CreateChargeResponse> {
         if (!this.validateCreateChargeInput(input)) {
-            return { error: 'Invalid input' }
+            return { error: new AppError('Invalid input', 400) }
         }
 
         const response = await http.post<CreateChargeRequest, CreateChargeResponse>(
@@ -260,7 +261,7 @@ class TransactionService extends BaseService {
         { email, amount, authorization_code, callback_url, metadata }: ChargeAuthorizationRequest
     ): BaseResponse<VerifyTransactionResponse> {
         if (!PaystackInputValidator.validateInitializeTransactionInput({ email, amount, callback_url }) || !authorization_code) {
-            return { error: 'Invalid input' }
+            return { error: new AppError('Invalid input', 400) }
         }
 
         const url = `${this.baseUrl}/charge_authorization`

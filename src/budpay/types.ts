@@ -8,13 +8,6 @@ type BudpaySuccessResponse<T> = {
     data: T
 }
 
-type BudpayResponseError = {
-    success: boolean
-    status: string
-    message: string
-    data: string
-}
-
 export interface AirtimeTopupRequest {
     provider: string
     amount: string
@@ -134,7 +127,6 @@ type TVProviderPackage = {
 type TVValidation = AirtimeTopup
 type TVTopup = AirtimeTopup
 
-export type BudpayBaseResponse<T> = BaseResponse<T, BudpayResponseError>
 export type AirtimeProvidersResponse = BudpaySuccessResponse<AirtimeProvider[]>
 export type AirtimeTopupResponse = BudpaySuccessResponse<AirtimeTopup>
 export type InternetProvidersResponse = BudpaySuccessResponse<InternetProvider[]>
