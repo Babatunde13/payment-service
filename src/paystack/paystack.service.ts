@@ -35,7 +35,7 @@ import {
     VerifyTransactionResponse,
     DVAEvents,
     ListPlansResponse,
-    listSubscriptionsResponse
+    ListSubscriptionsResponse
 } from './types'
 import http from '../http'
 import { AppError } from '../error'
@@ -319,8 +319,8 @@ class SubscriptionService extends BaseService {
         }
     }
 
-    public async listSubscriptions(): BaseResponse<listSubscriptionsResponse> {
-        const response = await http.get<listSubscriptionsResponse>(this.baseUrl, this.headers)
+    public async listSubscriptions(): BaseResponse<ListSubscriptionsResponse> {
+        const response = await http.get<ListSubscriptionsResponse>(this.baseUrl, this.headers)
 
         return response
     }

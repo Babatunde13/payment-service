@@ -1,7 +1,7 @@
 # Budpay Service
 
 ### [Budpay](https://Budpay.com/)
-Budpay is a payments platform that makes the online payments process seamless for both the consumers and the businesses they are trying to pay. It is a secure, modern, easy-to-use platform that allows merchants to accept online payments from customers around the world.
+With [Budpay](https://budpay.com/), you have everything your business needs to accept local and global payments. Whether you’re a small business, startup, or a large enterprise, our payment solutions are designed to empower your business.
 
 **Usage**:
 ```typescript
